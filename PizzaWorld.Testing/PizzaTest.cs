@@ -9,13 +9,13 @@ namespace PizzaWorld.Testing
         private void Test_OrderExists()
         {
             // arrange
-            var sut = new Pizza();
+            var sut = new MeatPizza();
 
             // act
             var actual = sut;
 
             // assert
-           Assert.IsType<Pizza>(actual);
+           Assert.IsType<MeatPizza>(actual);
             Assert.NotNull(actual);
 
         }

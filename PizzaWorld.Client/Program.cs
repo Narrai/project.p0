@@ -18,6 +18,7 @@ namespace PizzaWorld.Client
 
         static void Main(string[] args)
         {
+            // _client.MakeAStore();
             UserView();
         }
         
@@ -38,7 +39,9 @@ namespace PizzaWorld.Client
             user.SelectedStore = _client.SelectStore();
             user.SelectedStore.CreateOrders();
             user.Orders.Add(user.SelectedStore.Orders.Last());
-
+            user.Orders.Last().MakeMeatPizza();
+            user.Orders.Last().MakeMeatPizza();
+            
 
             Console.WriteLine(user);
         }

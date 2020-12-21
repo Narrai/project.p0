@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using PizzaWorld.Domain.Models;
 
@@ -8,8 +9,10 @@ namespace PizzaWorld.Domain.Singletons
 {
     public class ClientSingleton
     {
+        private const string _path = @"./pizzaworkd.xml";
         private static ClientSingleton _instance;
-        public static ClientSingleton Instance{
+        public static ClientSingleton Instance 
+        { 
             get
             {
                 if(_instance == null)
@@ -22,32 +25,48 @@ namespace PizzaWorld.Domain.Singletons
 
         public  List<Store>  Stores { get; set; }
         private ClientSingleton(){
-            Stores = new List<Store>();
+            Read();
         }
 
-        public void GetAllStores()
-        {
-
-        }
+        // public IEnumerable<Store> GetAllStores()
+        // {
+            
+        // }
 
         public void MakeAStore()
         {
-            var s = new Store();
-            Stores.Add(s);
+            Stores.Add(new Store());
             SaveStore();
         }
 
         private void SaveStore()
         {
-            string path = @"./pizzaworkd.xml";
+            string path = _path;
             var file = new StreamWriter(path);
             var xml = new XmlSerializer(typeof(List<Store>));
             xml.Serialize(file, Stores);
         }
 
-        public static implicit operator List<object>(ClientSingleton v)
+        private void Read()
         {
-            throw new NotImplementedException();
+            if(!File.Exists(_path))
+            {
+                Stores = new List<Store>();
+                return;
+            }
+            var file = new StreamReader(_path);
+            var xml = new XmlSerializer(typeof(List<Store>));
+
+            Stores = xml.Deserialize(file) as List<Store>;
+             // null if cannot convert
+            // Stores = (List<Store>) xml.Deserialize(file); // excetption if cannot convert
+        }
+
+
+        public Store SelectStore()
+        {
+            int.TryParse(Console.ReadLine(), out var input);
+            return Stores.ElementAtOrDefault(input);
         }
     }
 }
