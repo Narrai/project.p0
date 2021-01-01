@@ -1,24 +1,34 @@
+
 using PizzaWorld.Domain.Abstracts;
-using System.Collections.Generic;
 
 
 namespace PizzaWorld.Domain.Models
 {
     public class MeatPizza : APizzaModel
     {
+        public MeatPizza()
+        {
+            Name = "MeatPizza";
+        }
         protected override void AddCrust()
         {
-            Crust = "regular";
+            Crust = new Crusts("stuffed");
         }
-
         protected override void AddSize()
         {
-            Size = "small";
+            Size = new Sizes("Small", 10.99f);
         }
 
+        PizzaToppings pizzaToppings = new PizzaToppings();
+        
         protected override void AddToppings()
-        {
-            Toppings = new List<string>(){"cheese", "tomato", "mushroom"};
+        {   
+            pizzaToppings.toppings.Add(new Topping("Hem"));
+            pizzaToppings.toppings.Add(new Topping("Onion"));
+            pizzaToppings.toppings.Add(new Topping("Tomato"));
+            pizzaToppings.toppings.Add(new Topping("Jalapeno"));
+
+            Toppings = pizzaToppings;
         }
     }
 }

@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace PizzaWorld.Domain.Abstracts
 {
-    public abstract class APizzaModel
+    public class APizzaModel : AEntity
     {
-        public string Crust { get; set; }
-        public string Size { get; set; }
+        public string  Name { get; set; }
+        public Crusts Crust { get; set; }
+        public Sizes Size { get; set; }
+        public PizzaToppings Toppings { get; set;}
 
-        public List<string> Toppings { get; set; }
-
-        protected APizzaModel()
+        public APizzaModel()
         {
             AddCrust();
             AddSize();

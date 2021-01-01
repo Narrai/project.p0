@@ -8,6 +8,7 @@ namespace PizzaWorld.Client
 {
     class Program
     {
+        
         private static readonly ClientSingleton _client = ClientSingleton.Instance; // readonly 
 
         // private  readonly ClientSingleton _client1;
@@ -15,6 +16,7 @@ namespace PizzaWorld.Client
         // public Program(){
         //     _client1 = ClientSingleton.Instance;
         // }
+        private static readonly SqlClient _sql = new SqlClient();
 
         static void Main(string[] args)
         {
@@ -31,16 +33,32 @@ namespace PizzaWorld.Client
             }
         }
 
+        static void PringAllStoresWithEF(){
+            foreach(var store in _sql.ReadStores())
+            {   
+                Console.WriteLine(store);
+
+            }
+        }
+
         static void UserView(){
             var user = new User();
 
-            PringAllStores();
+            PringAllStoresWithEF();
 
-            user.SelectedStore = _client.SelectStore();
+            user.SelectedStore = _sql.SelectStore();
             user.SelectedStore.CreateOrders();
             user.Orders.Add(user.SelectedStore.Orders.Last());
             user.Orders.Last().MakeMeatPizza();
             user.Orders.Last().MakeMeatPizza();
+             _sql.ReadStores();
+        //    IEnumerable<Order> orders =  _sql.ReadOrders(user.SelectedStore);
+        //     foreach(var o in orders)
+        //     {
+        //         Console.WriteLine("order: " + o);
+        //     }
+
+            
             
 
             Console.WriteLine(user);

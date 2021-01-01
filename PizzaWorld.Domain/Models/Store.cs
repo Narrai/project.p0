@@ -1,12 +1,21 @@
 using System.Collections.Generic;
+using PizzaWorld.Domain.Abstracts;
 
 namespace PizzaWorld.Domain.Models
 {
-    public class Store
+    public class Store : AEntity
     {
+        public string Name { get; set; }
         public List<Order> Orders { get; set; }
+
+        public Store()
+        {
+            Orders = new List<Order>();
+        }
+        
         public void CreateOrders()
         {
+            
             Orders.Add(new Order());
         }
 
@@ -22,6 +31,12 @@ namespace PizzaWorld.Domain.Models
                 return false;
             }
         }
+
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
+
         
     }
 }
