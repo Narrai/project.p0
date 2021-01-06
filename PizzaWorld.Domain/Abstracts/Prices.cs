@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PizzaWorld.Domain.Abstracts
 {
-    public class Crusts : AEntity
+    public class Prices : AEntity
     {
-        public string Name { get; set; }
+        public float Price { get; set; }
     }
 }

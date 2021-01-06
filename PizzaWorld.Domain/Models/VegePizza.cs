@@ -1,11 +1,8 @@
-
-using System.Collections.Generic;
 using PizzaWorld.Domain.Abstracts;
-
 
 namespace PizzaWorld.Domain.Models
 {
-    public class MeatPizza : APizzaModel
+    public class VegePizza : APizzaModel
     {
         protected override void AddCrust()
         {

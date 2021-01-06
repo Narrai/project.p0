@@ -1,9 +1,11 @@
+
 using System.ComponentModel.DataAnnotations;
 
 namespace PizzaWorld.Domain.Abstracts
 {
-    public class Crusts : AEntity
+    public class Toppings : AEntity
     {
-        public string Name { get; set; }
+        public string  Name { get; set; }
+       
     }
 }

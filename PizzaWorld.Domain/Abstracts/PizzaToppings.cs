@@ -1,13 +1,11 @@
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PizzaWorld.Domain.Abstracts
 {
     public class PizzaToppings : AEntity
     {
-        public ICollection<Topping> toppings { get; set; }
-        public PizzaToppings()
-        {
-            toppings = new List<Topping>();
-        }
+        public APizzaModel Pizza { get; set; }
+        public Toppings Topping { get; set; }
+
     }
 }

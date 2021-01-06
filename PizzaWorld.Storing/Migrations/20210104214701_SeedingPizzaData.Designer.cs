@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaWorld.Storing;
 
 namespace PizzaWorld.Storing.Migrations
 {
     [DbContext(typeof(PizzaWorldContext))]
-    partial class PizzaWorldContextModelSnapshot : ModelSnapshot
+    [Migration("20210104214701_SeedingPizzaData")]
+    partial class SeedingPizzaData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +40,6 @@ namespace PizzaWorld.Storing.Migrations
 
                     b.Property<long?>("OrderEntityId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("OrderName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
@@ -223,20 +222,8 @@ namespace PizzaWorld.Storing.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<long?>("StoreEntityId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("StoreName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("TotalPrice")
-                        .HasColumnType("real");
 
                     b.Property<long?>("UserEntityId")
                         .HasColumnType("bigint");
@@ -252,9 +239,7 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasData(
                         new
                         {
-                            EntityId = 1L,
-                            OrderDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TotalPrice = 0f
+                            EntityId = 1L
                         });
                 });
 
@@ -292,18 +277,10 @@ namespace PizzaWorld.Storing.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("SelectedOrderEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("SelectedStoreEntityId")
                         .HasColumnType("bigint");
 
                     b.HasKey("EntityId");
-
-                    b.HasIndex("SelectedOrderEntityId");
 
                     b.HasIndex("SelectedStoreEntityId");
 
@@ -385,15 +362,9 @@ namespace PizzaWorld.Storing.Migrations
 
             modelBuilder.Entity("PizzaWorld.Domain.Models.User", b =>
                 {
-                    b.HasOne("PizzaWorld.Domain.Models.Order", "SelectedOrder")
-                        .WithMany()
-                        .HasForeignKey("SelectedOrderEntityId");
-
                     b.HasOne("PizzaWorld.Domain.Models.Store", "SelectedStore")
                         .WithMany()
                         .HasForeignKey("SelectedStoreEntityId");
-
-                    b.Navigation("SelectedOrder");
 
                     b.Navigation("SelectedStore");
                 });

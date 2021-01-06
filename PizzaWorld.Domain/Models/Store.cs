@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using PizzaWorld.Domain.Abstracts;
+using System;
 
 namespace PizzaWorld.Domain.Models
 {
     public class Store : AEntity
     {
+
         public string Name { get; set; }
         public List<Order> Orders { get; set; }
 
@@ -13,10 +15,14 @@ namespace PizzaWorld.Domain.Models
             Orders = new List<Order>();
         }
         
-        public void CreateOrders()
+        public Order CreateOrders(Store store, string orderName, float Total)
         {
-            
-            Orders.Add(new Order());
+            return new Order{
+                StoreName = store.Name,
+                Name = orderName,
+                OrderDate = DateTime.Now,
+                TotalPrice = Total
+            };
         }
 
         bool DeleteOrder(Order order)
