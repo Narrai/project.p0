@@ -13,19 +13,19 @@ namespace PizzaWorld.Domain.Abstracts
         public string Crust { get; set; }
         public string Size { get; set; }
         public float Price { get; set; }
-        public  string Topping { get; set;}
+        public  IList<Topping> Toppings { get; set;}
 
         public APizzaModel()
         {
             AddCrust();
             AddSize();
-            AddTopping();
+            // AddTopping();
             AddPrice();
         }
 
         protected virtual void AddCrust(){}
         protected virtual void AddSize(){}
-        protected virtual void AddTopping(){}
+        // protected virtual void AddTopping(){}
         protected virtual void AddPrice(){}
 
     }

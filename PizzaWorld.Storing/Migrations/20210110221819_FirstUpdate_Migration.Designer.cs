@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaWorld.Storing;
 
 namespace PizzaWorld.Storing.Migrations
 {
     [DbContext(typeof(PizzaWorldContext))]
-    partial class PizzaWorldContextModelSnapshot : ModelSnapshot
+    [Migration("20210110221819_FirstUpdate_Migration")]
+    partial class FirstUpdate_Migration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,10 +49,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.Property<long?>("CrustsEntityId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -78,8 +76,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasIndex("SizesEntityId");
 
                     b.ToTable("Pizzas");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("APizzaModel");
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Abstracts.Crusts", b =>
@@ -95,23 +91,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasKey("EntityId");
 
                     b.ToTable("Crusts");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "stuffed"
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Name = "thin"
-                        },
-                        new
-                        {
-                            EntityId = 3L,
-                            Name = "stuffed"
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Abstracts.Prices", b =>
@@ -127,23 +106,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasKey("EntityId");
 
                     b.ToTable("Prices");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Price = 10.99f
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Price = 12.99f
-                        },
-                        new
-                        {
-                            EntityId = 3L,
-                            Price = 14.99f
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Abstracts.Sizes", b =>
@@ -164,23 +126,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasIndex("PriceEntityId");
 
                     b.ToTable("Sizes");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "small"
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Name = "medium"
-                        },
-                        new
-                        {
-                            EntityId = 3L,
-                            Name = "large"
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Abstracts.Topping", b =>
@@ -196,23 +141,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasKey("EntityId");
 
                     b.ToTable("Toppings");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "tomato"
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Name = "grilled chicken"
-                        },
-                        new
-                        {
-                            EntityId = 3L,
-                            Name = "sauce"
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Models.Order", b =>
@@ -247,16 +175,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasIndex("UserEntityId");
 
                     b.ToTable("Orders");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "Nar",
-                            OrderDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StoreName = "One",
-                            TotalPrice = 20.98f
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Models.Store", b =>
@@ -272,18 +190,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasKey("EntityId");
 
                     b.ToTable("Stores");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "One"
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Name = "Two"
-                        });
                 });
 
             modelBuilder.Entity("PizzaWorld.Domain.Models.User", b =>
@@ -309,38 +215,6 @@ namespace PizzaWorld.Storing.Migrations
                     b.HasIndex("SelectedStoreEntityId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Name = "Nar"
-                        });
-                });
-
-            modelBuilder.Entity("PizzaWorld.Domain.Models.Pizza", b =>
-                {
-                    b.HasBaseType("PizzaWorld.Domain.Abstracts.APizzaModel");
-
-                    b.HasDiscriminator().HasValue("Pizza");
-
-                    b.HasData(
-                        new
-                        {
-                            EntityId = 1L,
-                            Crust = "stuffed",
-                            Name = "meat Pizza",
-                            Price = 10.99f,
-                            Size = "small"
-                        },
-                        new
-                        {
-                            EntityId = 2L,
-                            Crust = "thick",
-                            Name = "meat Pizza",
-                            Price = 12.99f,
-                            Size = "medium"
-                        });
                 });
 
             modelBuilder.Entity("APizzaModelTopping", b =>

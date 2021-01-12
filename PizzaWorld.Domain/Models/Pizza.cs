@@ -2,7 +2,7 @@ using PizzaWorld.Domain.Abstracts;
 
 namespace PizzaWorld.Domain.Models
 {
-    public class VegePizza : APizzaModel
+    public class Pizza : APizzaModel
     {
         protected override void AddCrust()
         {
@@ -18,9 +18,9 @@ namespace PizzaWorld.Domain.Models
             Price = new Prices().Price;
         }
         
-        protected override void AddTopping()
-        {   
-            Topping = new Toppings().Name;
-        }
+        // protected override void AddTopping()
+        // {   
+        //     Topping = new Toppings().Name;
+        // }
     }
 }

@@ -15,8 +15,10 @@ namespace PizzaWorld.Storing
         public DbSet<Crusts> Crusts { get; set; }
 
         public DbSet<Sizes> Sizes { get; set; }
-        public DbSet<Toppings> Toppings { get; set; }
-        public DbSet<PizzaToppings> PizzaToppings { get; set; }
+        public DbSet<Topping> Toppings { get; set; }
+
+        public DbSet<Prices> Prices {get; set;}
+        // public DbSet<PizzaToppings> PizzaToppings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
@@ -30,8 +32,7 @@ namespace PizzaWorld.Storing
             builder.Entity<Order>().HasKey(o => o.EntityId);
             builder.Entity<APizzaModel>().HasKey(p => p.EntityId);
             builder.Entity<Crusts>().HasKey(p => p.EntityId);
-            builder.Entity<Toppings>().HasKey(p => p.EntityId);
-            builder.Entity<PizzaToppings>().HasKey(p => p.EntityId);
+            builder.Entity<Topping>().HasKey(p => p.EntityId);
             builder.Entity<Sizes>().HasKey(p => p.EntityId);
             builder.Entity<Prices>().HasKey(p => p.EntityId);
 
@@ -47,39 +48,41 @@ namespace PizzaWorld.Storing
 
             builder.Entity<Order>().HasData(
                 new Order{
-                    EntityId=1
+                    EntityId=1,
+                    Name = "Nar",
+                    StoreName = "One",
+                    TotalPrice = 20.98f,
                 }
             );
 
             builder.Entity<User>().HasData(
                 new User{
-                    EntityId=1
+                    EntityId=1,
+                    Name = "Nar"
                 }
             );
-            builder.Entity<MeatPizza>().HasData(
-                new MeatPizza{
+            builder.Entity<Pizza>().HasData(
+                new Pizza{
                     EntityId = 1,
                     Name="meat Pizza",
                     Crust="stuffed",
                     Size = "small",
                     Price = 10.99f
-                }
-            );
-
-            builder.Entity<VegePizza>().HasData(
-                new VegePizza{
+                },
+                new Pizza{
                     EntityId = 2,
-                    Name="vege Pizza",
+                    Name="meat Pizza",
                     Crust="thick",
                     Size = "medium",
                     Price = 12.99f
                 }
             );
 
-            builder.Entity<Toppings>().HasData(
-                new Toppings{EntityId = 1, Name = "tomato"},
-                new Toppings{EntityId = 2, Name = "grilled chicken"},
-                new Toppings{EntityId = 3, Name = "sauce"}
+           
+            builder.Entity<Topping>().HasData(
+                new Topping{EntityId=1, Name = "tomato"},
+                new Topping{EntityId=2, Name = "grilled chicken"},
+                new Topping{EntityId=3, Name = "sauce"}
             );
 
             builder.Entity<Crusts>().HasData(
@@ -98,12 +101,6 @@ namespace PizzaWorld.Storing
                 new Prices{EntityId=1, Price=10.99f},
                 new Prices{EntityId=2, Price=12.99f},
                 new Prices{EntityId=3, Price=14.99f}
-            );
-
-            builder.Entity<PizzaToppings>().HasData(
-                new PizzaToppings{
-                    EntityId = 1
-                }
             );
         }
     }

@@ -4,14 +4,16 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using PizzaWorld.Storing;
 using PizzaWorld.Domain.Models;
+using PizzaWorld.Domain.Abstracts;
 
 namespace PizzaWorld.Client
 {
     public class SqlClient
     {
-        private  readonly  PizzaWorldContext _db = new PizzaWorldContext();
+       private readonly PizzaWorldContext _db = new PizzaWorldContext();
         public SqlClient()
         {
+            
 
             if(ReadStores().Count() == 0)
             {
@@ -68,7 +70,7 @@ namespace PizzaWorld.Client
         }
 
         // add order to database
-        public int AddOrder(Store store, string orderName, float price)
+        private int AddOrder(Store store, string orderName, float price)
         {
             float total = ComputePrice(price);
             _db.Orders.Add(store.CreateOrders(store, orderName, total));
@@ -118,8 +120,8 @@ namespace PizzaWorld.Client
         }
 
         // add pizza to database
-        public void CreatePizza(Order selectedOrder, string userName, string pizzaType, string topping, string size, string crust, float price){
-            _db.Pizzas.Add(selectedOrder.MakePizza(userName, pizzaType, crust, size, topping, price));
+        public void CreatePizza(Order selectedOrder, string userName, string pizzaType, string size, string crust, float price){
+            _db.Pizzas.Add(selectedOrder.MakePizza(userName, pizzaType, crust, size, price));
             _db.Database.OpenConnection();
             try
             {
@@ -142,7 +144,7 @@ namespace PizzaWorld.Client
 
 
         // select store
-        public Store SelectStore()
+        private Store SelectStore()
         {
             string input = Console.ReadLine();
             return ReadOne(input);
@@ -170,6 +172,7 @@ namespace PizzaWorld.Client
                    break;
                }
            }
+            
 
            _db.Users.Add(new User{
                Name = name
@@ -187,7 +190,7 @@ namespace PizzaWorld.Client
             }
         }
 
-        public User GetUser(string name)
+        private User GetUser(string name)
         {
             foreach(var user in _db.Users)
             {
@@ -199,20 +202,144 @@ namespace PizzaWorld.Client
             return null;
         }
 
-        public void PrintOrderDetails(string orderName)
+        private void PizzaToppings(long PizzaId)
         {
-            var pizzas = _db.Pizzas.ToList();
+           var pizza =  _db.Pizzas.Include("Toppings").FirstOrDefault(p => p.EntityId == PizzaId);
+           foreach(var t in pizza.Toppings)
+           {
+               Console.WriteLine(t.Name);
+           }
+           Console.WriteLine("************************");
+
+        }
+
+        private void InsertToppings()
+        {
+            foreach(var t in _db.Toppings)
+            {
+                Console.WriteLine(t.Name);
+            }
+            bool IsYes = false;
+            List<Topping> toppingsList = new List<Topping>();
+            do{
+                Console.WriteLine("Pick toppings: ");
+                string toppingName = Console.ReadLine();
+                var topping = _db.Toppings.FirstOrDefault(t => t.Name == toppingName);
+                toppingsList.Add(topping);
+
+                Console.WriteLine("Want add another topping: ");
+                string YesOrNo = Console.ReadLine();
+                if(YesOrNo.ToLower() == "yes")
+                {
+                    IsYes = true;
+                }
+                else{
+                    IsYes = false;
+                }
+            }while(IsYes);
+
+            var pizzas = _db.Pizzas.Include("Toppings").OrderBy(p => p.EntityId).LastOrDefault();
+            pizzas.Toppings = toppingsList;
+            _db.Database.OpenConnection();
+            try
+            {
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Users ON");
+                _db.SaveChanges();
+                _db.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Users OFF");
+            }
+            finally
+            {
+                _db.Database.CloseConnection();
+            }
+
+
+        }
+        // Process Pizza
+        public void ProcessPizza()
+        {
+            bool IsYes = false;
+                        do
+                        {
+                            Console.Write("Enter your name: ");
+                            string userName = Console.ReadLine();
+                            var user = GetUser(userName);
+                            Console.WriteLine("Select store: ");
+                            PringAllStoresWithEF();
+                            user.SelectedStore = SelectStore();
+                            Console.Write("Order name: ");
+                            string orderName = Console.ReadLine();
+                            Console.Write("pizza type: ");
+                            string pizzaType = Console.ReadLine();
+                            Console.Write("crust: ");
+                            string crust = Console.ReadLine();
+                            Console.Write("size: ");
+                            string size = Console.ReadLine();
+
+                            float price;
+
+                            switch (size)
+                                {
+                                    case "small": 
+                                                price = 10.99f;
+                                                break;
+                                    case "medium": 
+                                                price = 12.99f;
+                                                break;
+                                    case "large":
+                                                price = 14.99f;
+                                                break;
+                                    default:
+                                                price = 0;
+                                                break;
+                                }
+                                AddOrder(user.SelectedStore, orderName, price);
+                                
+                                user.SelectedOrder = SelectOrder(orderName);
+                                CreatePizza(user.SelectedOrder, orderName, pizzaType, size, crust, price);
+
+                                InsertToppings();
+                                
+                                Console.WriteLine("Your order is created");
+                                Console.WriteLine("**********************");
+                                PrintOrderDetails(orderName);
+
+                                Console.WriteLine("Add more pizza?");
+                                string yesOrNo = Console.ReadLine();
+                                if(yesOrNo.ToLower() == "yes")
+                                {
+                                    IsYes = true;
+                                }
+                                else
+                                {
+                                    IsYes = false;
+                                }
+                        }while(IsYes);
+        }
+
+        private void PringAllStoresWithEF(){
+            foreach(var store in ReadStores())
+            {   
+                Console.WriteLine("Store = " + store);
+                foreach(var o in store.Orders)
+                {
+                    Console.WriteLine(o);
+                }
+            }
+        }
+        private void PrintOrderDetails(string orderName)
+        {
+            var pizzas = _db.Pizzas;
             float total = 0;
             Console.WriteLine("Your Order details:");
             foreach(var p in pizzas)
-            {
-                if(p.OrderName.Equals(orderName))
+            { 
+                if(!(p.OrderName == null) && (p.OrderName.Equals(orderName)))
                 {
                     Console.WriteLine("Pizza = {0}", p.Name);
                     Console.WriteLine("Crust = {0}", p.Crust);
                     Console.WriteLine("Size = {0}", p.Size);
-                    Console.WriteLine("Topping = {0}", p.Topping);
                     Console.WriteLine("Price = ${0}", p.Price);
+                    PizzaToppings(p.EntityId);
                     Console.WriteLine("*************************");
                     total += p.Price;
                 }
